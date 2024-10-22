@@ -4,11 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Static CMS</title>
+    <link rel="stylesheet" href="https://unpkg.com/@staticcms/app@^4.0.0/dist/main.css" />
+
 </head>
 <body>
-    <script src="https://unpkg.com/static-cms@^2.0.0/dist/static-cms.js"></script>
+
+    <script src="https://unpkg.com/@staticcms/app@^4.0.0/dist/static-cms-app.js"></script>
+
+
     <script>
-      CMS.init();
+     StaticCMS.init();
+
+    async function authenticate(username, password) {
+        const response = await fetch('/users.json');
+        const users = await response.json();
+        return users.some(user => user.username === username && user.password === password);
+    }
+
+    // Użyj authenticate() do sprawdzenia logowania
     </script>
+
 </body>
 </html>
