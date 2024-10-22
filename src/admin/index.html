@@ -5,56 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Static CMS</title>
     <link rel="stylesheet" href="https://unpkg.com/@staticcms/app@^4.0.0/dist/main.css" />
+    <style>
+      /* Styl dla formularza logowania */
+      #login-form {
+          display: none;
+          flex-direction: column;
+          margin: 20px;
+      }
+      #login-error {
+          color: red;
+      }
+    </style>
 </head>
 <body>
-    <h1>Log in</h1>
-    <form id="loginForm">
-        <input type="text" name="username" placeholder="Username" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit">Log in</button>
-    </form>
 
-    <h1>Register</h1>
-    <form id="registerForm">
-        <input type="text" name="username" placeholder="Username" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <button type="submit">Register</button>
-    </form>
+    <h1>Logowanie do CMS</h1>
+
+    <div id="login-error"></div>
+    <div id="login-form">
+        <input type="text" id="username" placeholder="Nazwa użytkownika" required>
+        <input type="password" id="password" placeholder="Hasło" required>
+        <button id="login-button">Zaloguj</button>
+    </div>
 
     <script>
-        document.getElementById('loginForm').onsubmit = async function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
+      document.addEventListener("DOMContentLoaded", function() {
+          // Zmienne do przechowywania formularza i błędów
+          const loginForm = document.getElementById('login-form');
+          const loginError = document.getElementById('login-error');
 
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            const message = await response.text();
-            alert(message);
-        };
+          // Wyświetlenie formularza logowania
+          loginForm.style.display = 'flex';
 
-        document.getElementById('registerForm').onsubmit = async function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
+          // Funkcja do logowania
+          document.getElementById('login-button').addEventListener('click', function() {
+              const username = document.getElementById('username').value;
+              const password = document.getElementById('password').value;
 
-            const response = await fetch('/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            const message = await response.text();
-            alert(message);
-        };
+              fetch('users.json')
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                      }
+                      return response.json();
+                  })
+                  .then(users => {
+                      const user = users.find(u => u.username === username && u.password === password);
+                      if (user) {
+                          loginError.textContent = '';
+                          alert('Zalogowano pomyślnie!');
+                          // Tu możesz dodać kod do przejścia do panelu admina
+                      } else {
+                          loginError.textContent = 'Nieprawidłowa nazwa użytkownika lub hasło';
+                      }
+                  })
+                  .catch(error => {
+                      console.error('Error fetching users:', error);
+                  });
+          });
+      });
     </script>
 
-    <script src="https://unpkg.com/@staticcms/app@^4.0.0/dist/static-cms-app.js"></script>
 </body>
 </html>
