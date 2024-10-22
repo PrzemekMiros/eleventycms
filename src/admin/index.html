@@ -28,46 +28,80 @@
         <button id="login-button">Zaloguj</button>
     </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-          const loginForm = document.getElementById('login-form');
-          const loginError = document.getElementById('login-error');
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
 
-          // Wyświetlenie formularza logowania
-          loginForm.style.display = 'flex';
+        // Wyświetlenie formularza logowania
+        loginForm.style.display = 'flex';
 
-          // Funkcja do logowania
-          document.getElementById('login-button').addEventListener('click', function() {
-              const username = document.getElementById('username').value;
-              const password = document.getElementById('password').value;
+        // Funkcja do logowania
+        document.getElementById('login-button').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-              // Pobierz plik users.json
-              fetch('/users.json')
-                  .then(response => {
-                      if (!response.ok) {
-                          throw new Error('Network response was not ok');
-                      }
-                      return response.json();
-                  })
-                  .then(users => {
-                      // Sprawdzenie poprawności danych logowania
-                      const user = users.find(u => u.username === username && u.password === password);
-                      if (user) {
-                          loginError.textContent = '';
-                          alert('Zalogowano pomyślnie!');
-                          // Przekierowanie do panelu admina
-                          window.location.href = '/admin/dashboard.html'; // Zmień na odpowiednią stronę
-                      } else {
-                          loginError.textContent = 'Nieprawidłowa nazwa użytkownika lub hasło';
-                      }
-                  })
-                  .catch(error => {
-                      console.error('Error fetching users:', error);
-                      loginError.textContent = 'Wystąpił błąd, spróbuj ponownie później.';
-                  });
-          });
-      });
-    </script>
+            // Pobierz plik users.json
+            fetch('/users.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    // Sprawdzenie poprawności danych logowania
+                    const user = users.find(u => u.username === username && u.password === password);
+                    if (user) {
+                        loginError.textContent = '';
+                        alert('Zalogowano pomyślnie!');
+
+                        // Ładowanie Static CMS
+                        loadStaticCMS();
+                    } else {
+                        loginError.textContent = 'Nieprawidłowa nazwa użytkownika lub hasło';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching users:', error);
+                    loginError.textContent = 'Wystąpił błąd, spróbuj ponownie później.';
+                });
+        });
+
+        function loadStaticCMS() {
+            // Skrypt do załadowania Static CMS
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/@staticcms/app@^4.0.0/dist/static-cms.js';
+            script.onload = function() {
+                // Inicjalizacja Static CMS
+                StaticCMS.init({
+                    backend: {
+                        name: 'git-gateway',
+                        branch: 'main',
+                    },
+                    media_folder: 'src/assets/img',
+                    public_folder: '/assets/img',
+                    collections: [
+                        {
+                            name: 'blog',
+                            label: 'Blog',
+                            folder: 'src/content/posts',
+                            create: true,
+                            slug: '{{slug}}',
+                            fields: [
+                                { label: 'Tytuł', name: 'title', widget: 'string' },
+                                { label: 'Data', name: 'date', widget: 'datetime' },
+                                { label: 'Treść', name: 'body', widget: 'markdown' },
+                            ],
+                        },
+                    ],
+                });
+            };
+            document.body.appendChild(script);
+        }
+    });
+</script>
+
 
 </body>
 </html>
