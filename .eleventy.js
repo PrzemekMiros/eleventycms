@@ -1,7 +1,6 @@
 module.exports = function(eleventyConfig) {
-    // Konfiguracja
-    eleventyConfig.addPassthroughCopy("src/assets/css/main.css"); // Kopiuj plik CSS do folderu output
-    
+
+    eleventyConfig.addPassthroughCopy("src/assets/css/main.css"); 
     
     return {
         dir: {
