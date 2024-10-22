@@ -1,0 +1,17 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "src/assets/img" # Gdzie będą przechowywane pliki media w repozytorium
+public_folder: "/assets/img"   # Publiczny adres URL dla plików media
+
+collections:
+  - name: "blog" # Nazwa kolekcji
+    label: "Blog"
+    folder: "src/content/posts" # Gdzie będą zapisywane posty w formacie markdown
+    create: true # Pozwala na tworzenie nowych postów
+    slug: "{{slug}}" # Używanie tytułu jako slug
+    fields: # Definiowanie pól formularza w CMS
+      - {label: "Tytuł", name: "title", widget: "string"}
+      - {label: "Data", name: "date", widget: "datetime"}
+      - {label: "Treść", name: "body", widget: "markdown"}
