@@ -1,9 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,22 +17,19 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-// Użytkownicy (przykładowe dane, w rzeczywistości powinny być w bazie danych)
-const users = [];
-
-// Endpoint do rejestracji
-app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    users.push({ username, password: hashedPassword });
-    res.status(201).send('User registered');
-});
+// Funkcja do wczytywania użytkowników z pliku
+function loadUsers() {
+    const data = fs.readFileSync(path.join(__dirname, 'users.json'));
+    return JSON.parse(data);
+}
 
 // Endpoint do logowania
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    const user = users.find(u => u.username === username);
-    if (user && await bcrypt.compare(password, user.password)) {
+    const users = loadUsers();
+    const user = users.find(u => u.username === username && u.password === password);
+    
+    if (user) {
         const token = jwt.sign({ username: user.username }, 'your_jwt_secret_key', { expiresIn: '1h' });
         req.session.token = token; // Przechowuj token w sesji
         res.send('Logged in successfully');
