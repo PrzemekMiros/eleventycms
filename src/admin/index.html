@@ -3,83 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netlify CMS</title>
-    <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.css" />
-    <style>
-      /* Styl dla formularza logowania */
-      #login-form {
-          display: none;
-          flex-direction: column;
-          margin: 20px;
-      }
-      #login-error {
-          color: red;
-      }
-    </style>
+    <title>Static CMS</title>
+    <link rel="stylesheet" href="https://unpkg.com/@staticcms/app@^4.0.0/dist/main.css" />
+
 </head>
 <body>
 
-    <h1>Logowanie do CMS</h1>
+    <script src="https://unpkg.com/@staticcms/app@^4.0.0/dist/static-cms-app.js"></script>
 
-    <div id="login-error"></div>
-    <div id="login-form">
-        <input type="text" id="username" placeholder="Nazwa użytkownika" required>
-        <input type="password" id="password" placeholder="Hasło" required>
-        <button id="login-button">Zaloguj</button>
-    </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const loginForm = document.getElementById('login-form');
-        const loginError = document.getElementById('login-error');
-
-        // Wyświetlenie formularza logowania
-        loginForm.style.display = 'flex';
-
-        // Funkcja do logowania
-        document.getElementById('login-button').addEventListener('click', function() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Pobierz plik users.json
-            fetch('/users.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(users => {
-                    // Sprawdzenie poprawności danych logowania
-                    const user = users.find(u => u.username === username && u.password === password);
-                    if (user) {
-                        loginError.textContent = '';
-                        alert('Zalogowano pomyślnie!');
-
-                        // Ładowanie Netlify CMS
-                        loadNetlifyCMS();
-                    } else {
-                        loginError.textContent = 'Nieprawidłowa nazwa użytkownika lub hasło';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching users:', error);
-                    loginError.textContent = 'Wystąpił błąd, spróbuj ponownie później.';
-                });
-        });
-
-        function loadNetlifyCMS() {
-            // Skrypt do załadowania Netlify CMS
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js';
-            script.onload = function() {
-                // Inicjalizacja Netlify CMS
-                NetlifyCMS.init();
-            };
-            document.body.appendChild(script);
-        }
-    });
-</script>
+    <script>
+     StaticCMS.init();
+    </script>
 
 </body>
 </html>
