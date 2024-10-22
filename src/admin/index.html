@@ -5,15 +5,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Static CMS</title>
     <link rel="stylesheet" href="https://unpkg.com/@staticcms/app@^4.0.0/dist/main.css" />
-
+    <style>
+        /* Styl dla formularza logowania */
+        #login-form {
+            display: none;
+            flex-direction: column;
+            margin: 20px;
+        }
+        #login-error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 
+    <h1>Logowanie do CMS</h1>
+
+    <div id="login-error"></div>
+    <div id="login-form">
+        <input type="text" id="username" placeholder="Nazwa użytkownika" required>
+        <input type="password" id="password" placeholder="Hasło" required>
+        <button id="login-button">Zaloguj</button>
+    </div>
+
     <script src="https://unpkg.com/@staticcms/app@^4.0.0/dist/static-cms-app.js"></script>
 
-
     <script>
-     StaticCMS.init();
+        // Wyświetlenie formularza logowania
+        document.getElementById('login-form').style.display = 'flex';
+
+        // Funkcja logowania
+        document.getElementById('login-button').addEventListener('click', function(event) {
+            event.preventDefault(); // Zapobiega domyślnemu działaniu przycisku
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Tutaj powinieneś dodać logikę do weryfikacji użytkownika
+            // Na przykład, możesz sprawdzić dane w pliku users.json
+            fetch('/users.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Błąd sieciowy');
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    const user = users.find(u => u.username === username && u.password === password);
+                    if (user) {
+                        // Użytkownik jest zalogowany
+                        document.getElementById('login-error').textContent = '';
+                        alert('Zalogowano pomyślnie!');
+                        loadStaticCMS(); // Ładowanie Static CMS
+                    } else {
+                        document.getElementById('login-error').textContent = 'Nieprawidłowa nazwa użytkownika lub hasło';
+                    }
+                })
+                .catch(error => {
+                    console.error('Błąd podczas ładowania użytkowników:', error);
+                    document.getElementById('login-error').textContent = 'Wystąpił błąd, spróbuj ponownie później.';
+                });
+        });
+
+        // Funkcja do załadowania Static CMS
+        function loadStaticCMS() {
+            StaticCMS.init({
+                backend: {
+                    name: 'git-gateway',
+                    branch: 'main',
+                },
+                media_folder: 'src/assets/img',
+                public_folder: '/assets/img',
+                collections: [
+                    {
+                        name: 'blog',
+                        label: 'Blog',
+                        folder: 'src/content/posts',
+                        create: true,
+                        slug: '{{slug}}',
+                        fields: [
+                            { label: 'Tytuł', name: 'title', widget: 'string' },
+                            { label: 'Data', name: 'date', widget: 'datetime' },
+                            { label: 'Treść', name: 'body', widget: 'markdown' },
+                        ],
+                    },
+                ],
+            });
+        }
     </script>
 
 </body>
