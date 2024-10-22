@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Static CMS</title>
-    <link rel="stylesheet" href="https://unpkg.com/@staticcms/app@^4.0.0/dist/main.css" />
+    <title>Netlify CMS</title>
+    <link rel="stylesheet" href="https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.css" />
     <style>
       /* Styl dla formularza logowania */
       #login-form {
@@ -56,8 +56,8 @@
                         loginError.textContent = '';
                         alert('Zalogowano pomyślnie!');
 
-                        // Ładowanie Static CMS
-                        loadStaticCMS();
+                        // Ładowanie Netlify CMS
+                        loadNetlifyCMS();
                     } else {
                         loginError.textContent = 'Nieprawidłowa nazwa użytkownika lub hasło';
                     }
@@ -68,40 +68,18 @@
                 });
         });
 
-        function loadStaticCMS() {
-            // Skrypt do załadowania Static CMS
+        function loadNetlifyCMS() {
+            // Skrypt do załadowania Netlify CMS
             const script = document.createElement('script');
-            script.src = 'https://unpkg.com/@staticcms/app@^4.0.0/dist/static-cms.js';
+            script.src = 'https://unpkg.com/netlify-cms@^2.0.0/dist/netlify-cms.js';
             script.onload = function() {
-                // Inicjalizacja Static CMS
-                StaticCMS.init({
-                    backend: {
-                        name: 'git-gateway',
-                        branch: 'main',
-                    },
-                    media_folder: 'src/assets/img',
-                    public_folder: '/assets/img',
-                    collections: [
-                        {
-                            name: 'blog',
-                            label: 'Blog',
-                            folder: 'src/content/posts',
-                            create: true,
-                            slug: '{{slug}}',
-                            fields: [
-                                { label: 'Tytuł', name: 'title', widget: 'string' },
-                                { label: 'Data', name: 'date', widget: 'datetime' },
-                                { label: 'Treść', name: 'body', widget: 'markdown' },
-                            ],
-                        },
-                    ],
-                });
+                // Inicjalizacja Netlify CMS
+                NetlifyCMS.init();
             };
             document.body.appendChild(script);
         }
     });
 </script>
-
 
 </body>
 </html>
