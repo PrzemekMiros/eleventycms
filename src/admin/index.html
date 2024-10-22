@@ -30,7 +30,6 @@
 
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-          // Zmienne do przechowywania formularza i błędów
           const loginForm = document.getElementById('login-form');
           const loginError = document.getElementById('login-error');
 
@@ -42,7 +41,8 @@
               const username = document.getElementById('username').value;
               const password = document.getElementById('password').value;
 
-              fetch('users.json')
+              // Pobierz plik users.json
+              fetch('/users.json')
                   .then(response => {
                       if (!response.ok) {
                           throw new Error('Network response was not ok');
@@ -50,17 +50,20 @@
                       return response.json();
                   })
                   .then(users => {
+                      // Sprawdzenie poprawności danych logowania
                       const user = users.find(u => u.username === username && u.password === password);
                       if (user) {
                           loginError.textContent = '';
                           alert('Zalogowano pomyślnie!');
-                          // Tu możesz dodać kod do przejścia do panelu admina
+                          // Przekierowanie do panelu admina
+                          window.location.href = '/admin/dashboard.html'; // Zmień na odpowiednią stronę
                       } else {
                           loginError.textContent = 'Nieprawidłowa nazwa użytkownika lub hasło';
                       }
                   })
                   .catch(error => {
                       console.error('Error fetching users:', error);
+                      loginError.textContent = 'Wystąpił błąd, spróbuj ponownie później.';
                   });
           });
       });
