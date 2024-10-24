@@ -3,7 +3,7 @@ name: Deploy Eleventy Site to OVH
 on:
   push:
     branches:
-      - main
+      - main  # Wdrażanie po pushu na branch 'main'
 
 jobs:
   deploy:
@@ -19,16 +19,19 @@ jobs:
         node-version: '18'
 
     - name: Install dependencies
-      run: npm install
+      run: npm install  # Instalacja zależności, w tym TinaCMS i Eleventy
 
     - name: Build Eleventy site
-      run: npx tinacms build -c "npm run build"
+      run: npm run build  # Budowanie strony Eleventy
+
+    - name: Build TinaCMS Admin
+      run: npx tinacms build  # Budowanie panelu administracyjnego TinaCMS
 
     - name: Deploy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
+        server: ${{ secrets.FTP_SERVER }}  # Dane serwera FTP z GitHub Secrets
+        username: ${{ secrets.FTP_USERNAME }}  # Nazwa użytkownika FTP
+        password: ${{ secrets.FTP_PASSWORD }}  # Hasło FTP
         local-dir: ./public/  # Folder z plikami Eleventy
-        server-dir: /www/  # Folder na serwerze OVH
+        server-dir: /www/  # Folder docelowy na serwerze OVH

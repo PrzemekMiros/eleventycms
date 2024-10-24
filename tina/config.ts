@@ -1,19 +1,17 @@
 import { defineConfig } from "tinacms";
 
-// Branch, na którym operujemy, z GitHub
-const branch = "main";  // Możesz ręcznie ustawić branch
+const branch = "main";  // Możesz ustawić branch na swój główny branch
 
 export default defineConfig({
   branch,
-
   build: {
-    outputFolder: "admin",  // Folder dla panelu administracyjnego TinaCMS
+    outputFolder: "admin",  // Folder, gdzie będzie generowany panel TinaCMS
     publicFolder: "public",  // Folder publiczny Eleventy
   },
   media: {
     tina: {
       mediaRoot: "",
-      publicFolder: "public",  // Folder, gdzie trzymasz zasoby multimedialne
+      publicFolder: "public",
     },
   },
   schema: {
@@ -21,7 +19,7 @@ export default defineConfig({
       {
         name: "post",
         label: "Posts",
-        path: "src/content/posts",  // Ścieżka do postów
+        path: "src/content/posts",
         fields: [
           {
             type: "string",
@@ -37,6 +35,17 @@ export default defineConfig({
             isBody: true,
           },
         ],
+      },
+    ],
+  },
+  // Konfiguracja lokalna dla Git
+  local: {
+    plugins: [
+      {
+        type: "git",
+        branch: "main",
+        gitRemote: "origin",
+        baseDir: "",  // Główna ścieżka do repozytorium
       },
     ],
   },
