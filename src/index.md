@@ -3,6 +3,6 @@ layout: "base.njk"
 title: Eleventy site
 ---
 
-# Eleventy site with Static CMS
+# Eleventy SSG site with Static CMS
 
 
