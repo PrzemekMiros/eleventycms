@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
-    "@tinacms/cli": "^1.6.10",
+   "@tinacms/cli": "^2.0.0", 
     "@types/node": "^22.7.9"
   },
   "dependencies": {
