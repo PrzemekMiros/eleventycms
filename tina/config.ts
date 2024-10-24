@@ -1,6 +1,6 @@
 import { defineConfig } from "tinacms";
 
-const branch = "main";  // Możesz ustawić branch na swój główny branch
+const branch = "main";  // Ustaw na branch, którego używasz
 
 export default defineConfig({
   branch,
@@ -35,17 +35,6 @@ export default defineConfig({
             isBody: true,
           },
         ],
-      },
-    ],
-  },
-  // Konfiguracja lokalna dla Git
-  local: {
-    plugins: [
-      {
-        type: "git",
-        branch: "main",
-        gitRemote: "origin",
-        baseDir: "",  // Główna ścieżka do repozytorium
       },
     ],
   },
